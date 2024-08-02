@@ -25,10 +25,10 @@ logs:
 	$(DOCKER_COMPOSE_FLAGS) --tail=25 app
 
 black:
-	$(DOCKER_COMPOSE_FLAGS) run --rm app black -l 86 $$(find * -name '*.py')
+	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} app black -l 86 $$(find * -name '*.py')
 
 mypy:
-	$(DOCKER_COMPOSE_FLAGS) run --rm app mypy src/ tests/
+	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} app mypy src/ tests/
 
 bash:
 	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} -it app $(filter-out $@,$(MAKECMDGOALS)) /bin/sh
