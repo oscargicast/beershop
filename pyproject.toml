@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "beershop"
+version = "0.1.0"
+description = ""
+authors = ["Oscar Giraldo Castillo <oscar.gi.cast@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pytest = "^8.3.2"
+mypy = "^1.11.1"
+pytest-icdiff = "^0.9"
+
+[tool.poetry.group.dev.dependencies]
+ipdb = "^0.13.13"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

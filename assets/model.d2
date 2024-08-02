@@ -1,0 +1,122 @@
+vars: {
+  value_object_color: "#f4a261"
+  domain_service_function_color: "#4575F3"
+}
+
+"""
+STOCK
+"""
+
+Beer: {
+  shape: class
+
+  +name: string
+  +price: int
+  +quantity: int
+}
+
+Stock: {
+  shape: class
+
+  +last_updated: datetime
+  +beers: dict<str, Beer>
+
+  +allocate(beers list(Beer) | None): void
+  +can_allocate(beer Beer): bool
+}
+
+Beer -> Stock: is allocated in
+
+"""
+ROUND
+"""
+
+RoundItem: {
+  shape: class
+
+  +beer: str
+  +quantity: int
+
+  style.fill: ${value_object_color}
+}
+
+Round: {
+  shape: class
+
+  +items: list<RoundItem>
+
+  +get_item(beer: str): RoundItem | None
+
+  style.fill: ${value_object_color}
+}
+
+OrderRound: {
+  shape: class
+
+  +created: datetime
+  +items: list<RoundItem>
+
+  +get_item(beer: str): RoundItem | None
+
+  style.fill: ${value_object_color}
+}
+
+RoundItem -> Round: belongs_to
+RoundItem -> OrderRound: belongs_to
+
+"""
+ITEM
+"""
+
+Item: {
+  shape: class
+
+  +beer: str
+  +price_per_unit: int # Snapshot of the price at the moment of the order
+  +total: int # Quantity of beers.
+}
+
+"""
+ORDER
+"""
+
+Order: {
+  shape: class
+
+  +ref: string
+  +created: datetime
+  +rounds: list<OrderRound>
+  +items: dict<str, Item>
+
+  +add_round(stock Stock, round Round): void
+  -__update_items(stock Stock, round Round): void
+  -__update_rounds(round Round): void
+  -__update_subtotal(): void
+}
+
+OrderRound -> Order: has
+Item -> Order: sums up
+
+"""
+LEGEND
+"""
+
+Leyend: {
+  near: top-center
+
+  Domain Service Functions: {
+    shape: class
+
+    style.fill: ${domain_service_function_color}
+  }
+
+  Value Object: {
+    shape: class
+
+    style.fill: ${value_object_color}
+  }
+
+  Entity: {
+    shape: class
+  }
+}

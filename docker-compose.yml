@@ -1,0 +1,13 @@
+services:
+  app:
+    image: beershop
+    build:
+      context: .
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./src:/code/src
+      - ./tests:/code/tests
+    ports:
+      - "8000:8000"
