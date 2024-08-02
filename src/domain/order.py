@@ -43,15 +43,28 @@ class Item:
 class Order:
     IVA = 0.19
 
+    created: datetime
+    paid: bool
+    taxes: float
+    discounts: int
+    subtotal: int
+    items: list[Item]
+    rounds: list[OrderRound]
+
+    # List of all created order instances.
+    _instances: list["Order"] = []
+
     def __init__(self, ref: str):
         self.reference = ref
         self.created = datetime.now()
-        self.paid = 0
+        self.paid = False
         self.taxes = 0
         self.discounts = 0
-        self.items: dict[str, Item] = dict()
-        self.rounds: list[OrderRound] = list()
         self.subtotal = 0
+        self.items = list()
+        self.rounds = list()
+        # Add the instance to the list of instances.
+        self.__class__._instances.append(self)
 
     def __repr__(self):
         return f"Order(reference={self.reference})"
@@ -70,6 +83,22 @@ class Order:
         if other.created is None:
             return True
         return self.created > other.created
+
+    @classmethod
+    def get_instances(cls) -> list["Order"]:
+        """Return all created instances."""
+        return cls._instances
+
+    @classmethod
+    def clear_instances(cls) -> None:
+        """Clear all created instances."""
+        cls._instances.clear()
+
+    def get_item(self, beer: str) -> Item | None:
+        for item in self.items:
+            if item.name == beer:
+                return item
+        return None
 
     def add_round(self, stock: Stock, round: Round):
         """
@@ -95,20 +124,22 @@ class Order:
         self.__update_subtotal()
 
     def __update_items(self, stock: Stock, round: Round):
-        """Update order's subtotal, taxes, discounts, and items."""
         for round_item in round.items:
             beer = stock.beers[round_item.beer]  # Get beer from stock.
-            # Update item.
-            item = self.items.get(beer.name)
-            if not item:
+            # Buscar si el item ya existe en self.items
+            item = next((i for i in self.items if i.name == beer.name), None)
+
+            if item is None:
+                # Si no existe, crear un nuevo item y añadirlo a la lista
                 item = Item(
                     name=beer.name,
                     price_per_unit=beer.price,
                     total=round_item.quantity,
                 )
+                self.items.append(item)
             else:
+                # Si ya existe, actualizar la cantidad total
                 item.total += round_item.quantity
-            self.items[beer.name] = item
 
     def __update_rounds(self, round: Round):
         """Update the order's rounds."""
@@ -121,7 +152,5 @@ class Order:
 
     def __update_subtotal(self):
         """Update the order's subtotal, taxes, and discounts."""
-        self.subtotal = sum(
-            item.price_per_unit * item.total for item in self.items.values()
-        )
+        self.subtotal = sum(item.price_per_unit * item.total for item in self.items)
         self.taxes = self.subtotal * self.IVA

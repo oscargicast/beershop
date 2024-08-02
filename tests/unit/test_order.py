@@ -1,32 +1,10 @@
 import pytest
 
-from domain.stock import Beer, Stock, OutOfStock
+from domain.stock import OutOfStock
 from domain.order import Round, RoundItem, Order
 
 
-def make_stock() -> Stock:
-    stock = Stock()
-    corona = Beer(
-        name="Corona",
-        price=115,
-        quantity=2,
-    )
-    quilmes = Beer(
-        name="Quilmes",
-        price=120,
-        quantity=0,
-    )
-    club_colombia = Beer(
-        name="Club Colombia",
-        price=110,
-        quantity=3,
-    )
-    stock.allocate([corona, quilmes, club_colombia])
-    return stock
-
-
-def test_after_one_round():
-    stock = make_stock()
+def test_after_one_round(stock):
     round_1 = Round(
         RoundItem("Corona", 2),
         RoundItem("Club Colombia", 1),
@@ -46,12 +24,11 @@ def test_after_one_round():
     assert order.taxes == 340 * Order.IVA
 
     # Check items.
-    assert order.items["Corona"].price_per_unit == stock.beers["Corona"].price
-    assert order.items["Corona"].total == round_1.get_item("Corona").quantity
+    assert order.get_item("Corona").price_per_unit == stock.beers["Corona"].price
+    assert order.get_item("Corona").total == round_1.get_item("Corona").quantity
 
 
-def test_after_two_rounds():
-    stock = make_stock()
+def test_after_two_rounds(stock):
     order = Order(ref="order_1")
 
     round_1 = Round(
@@ -69,13 +46,13 @@ def test_after_two_rounds():
     assert order.subtotal == 225
     assert order.taxes == 225 * Order.IVA
     # Check order items.
-    assert order.items["Corona"].price_per_unit == stock.beers["Corona"].price
+    assert order.get_item("Corona").price_per_unit == stock.beers["Corona"].price
     assert (
-        order.items["Club Colombia"].price_per_unit
+        order.get_item("Club Colombia").price_per_unit
         == stock.beers["Club Colombia"].price
     )
-    assert order.items["Corona"].total == 1
-    assert order.items["Club Colombia"].total == 1
+    assert order.get_item("Corona").total == 1
+    assert order.get_item("Club Colombia").total == 1
 
     round_2 = Round(
         RoundItem("Corona", 1),
@@ -92,20 +69,19 @@ def test_after_two_rounds():
     assert order.subtotal == 560
     assert order.taxes == 560 * Order.IVA
     # Check order items.
-    assert order.items["Corona"].price_per_unit == stock.beers["Corona"].price
+    assert order.get_item("Corona").price_per_unit == stock.beers["Corona"].price
     assert (
-        order.items["Club Colombia"].price_per_unit
+        order.get_item("Club Colombia").price_per_unit
         == stock.beers["Club Colombia"].price
     )
-    assert order.items["Corona"].total == 2
-    assert order.items["Club Colombia"].total == 3
+    assert order.get_item("Corona").total == 2
+    assert order.get_item("Club Colombia").total == 3
 
     # Check round creation time.
     assert order.rounds[0].created < order.rounds[1].created
 
 
-def test_order_out_of_stock():
-    stock = make_stock()
+def test_order_out_of_stock(stock):
     round_1 = Round(
         RoundItem("Corona", 2),
         RoundItem("Club Colombia", 4),
@@ -126,5 +102,5 @@ def test_order_out_of_stock():
     assert order.taxes == 0 * Order.IVA
 
     # Check items.
-    assert order.items == dict()
+    assert order.items == list()
     assert order.rounds == list()

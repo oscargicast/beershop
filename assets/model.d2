@@ -86,8 +86,9 @@ Order: {
   +ref: string
   +created: datetime
   +rounds: list<OrderRound>
-  +items: dict<str, Item>
+  +items: list<Item>
 
+  +get_item(beer str): Item | None
   +add_round(stock Stock, round Round): void
   -__update_items(stock Stock, round Round): void
   -__update_rounds(round Round): void

@@ -9,5 +9,8 @@ services:
     volumes:
       - ./src:/code/src
       - ./tests:/code/tests
+      - .:/code
+    env_file:
+      - .env
     ports:
       - "8000:8000"
