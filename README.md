@@ -34,6 +34,13 @@ make test
 poetry run pytest
 ```
 
+## Formatting and linting
+
+```sh
+make mypy
+make black
+```
+
 ## Makefile
 
 There are more useful commands in the [Makefile](Makefile), have a look and try them out.
