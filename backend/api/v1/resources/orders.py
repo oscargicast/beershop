@@ -3,6 +3,8 @@ from fastapi import APIRouter, HTTPException
 from schemas.order import OrderSchema
 from services.order import OrderService
 
+from typing import Any
+
 
 router = APIRouter(
     prefix="/orders",
@@ -10,9 +12,9 @@ router = APIRouter(
 )
 
 
-@router.get("/{order_ref}")
-def read_item(order_ref: str) -> OrderSchema:
+@router.get("/{order_ref}", response_model=OrderSchema)
+def read_item(order_ref: str) -> Any:
     order = OrderService.get_order_by_reference(order_ref)
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    return order
+    return OrderSchema.from_order(order)

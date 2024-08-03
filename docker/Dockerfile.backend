@@ -24,7 +24,8 @@ ENV PYTHONUNBUFFERED=1 \
     # this is where our requirements + virtual environment will live
     PYSETUP_PATH="/opt/pysetup" \
     VENV_PATH="/opt/pysetup/.venv" \
-    PYTHONPATH="/code/src"
+    PROJECT_PATH="/code" \
+    PYTHONPATH="/code"
 
 
   # Update image and install deps
@@ -44,7 +45,8 @@ COPY pyproject.toml ./
 RUN poetry lock
 RUN poetry install --only main --no-root
 
-COPY src/ /code/src/
-COPY tests/ /code/tests/
+# COPY backend/ /code/backend/
+# COPY backend/ $PYTHONPATH
+# COPY tests/ $PROJECT_PATH/tests/
 
-WORKDIR /code
+WORKDIR $PROJECT_PATH

@@ -3,12 +3,16 @@ import sys
 
 from pathlib import Path
 
+backend_path = Path(__file__).resolve().parent.parent
+print(backend_path)
+
 from domain.stock import Beer, Stock
 from domain.order import Order, Round, RoundItem
 
-# Add the src directory to the sys.path.
-src_path = Path(__file__).resolve().parent.parent / "src"
-sys.path.insert(0, str(src_path))
+# Add the backend directory to the sys.path.
+# backend_path = Path(__file__).resolve().parent.parent / "backend"
+
+sys.path.insert(0, str(backend_path))
 
 
 @pytest.fixture(scope="function")

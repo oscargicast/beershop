@@ -1,0 +1,21 @@
+include Makefile
+
+DOCKER_SERVICE := backend
+
+test:
+	$(DOCKER_COMPOSE_FLAGS) run --rm ${DOCKER_SERVICE} pytest -s $(filter-out $@,$(MAKECMDGOALS))
+
+black:
+	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} ${DOCKER_SERVICE} black .
+
+mypy:
+	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} ${DOCKER_SERVICE} mypy --explicit-package-bases .
+
+runserver:
+	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} -it --service-ports ${DOCKER_SERVICE} fastapi dev main.py --app=app --host=0.0.0.0 --port=8000
+
+bash:
+	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} -it ${DOCKER_SERVICE} $(filter-out $@,$(MAKECMDGOALS)) /bin/sh
+
+%:
+	@:

@@ -1,16 +1,33 @@
 services:
-  app:
-    image: beershop
+  backend:
+    image: beershop-backend
     build:
       context: .
+      dockerfile: ./docker/Dockerfile.backend
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
     volumes:
-      - ./src:/code/src
-      - ./tests:/code/tests
-      - .:/code
+      - ./backend:/code
+      # - ./backend/tests:/code/tests
+      - ./.env:/code/.env
+      - ./backend/pyproject.toml:/opt/pysetup/pyproject.toml
+      - ./backend/poetry.lock:/opt/pysetup/poetry.lock
     env_file:
       - .env
+    command: fastapi dev backend/main.py --app=app --host=0.0.0.0 --port=8000
     ports:
       - "8000:8000"
+
+  frontend:
+    image: beershop-frontend
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/code
+    command: npm run dev
+    depends_on:
+      - backend

@@ -1,0 +1,22 @@
+include Makefile
+
+DOCKER_SERVICE := frontend
+NPM_RUN := npm run
+
+dev:
+	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} -it --service-ports --rm ${DOCKER_SERVICE} ${NPM_RUN} dev
+
+build:
+	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} ${DOCKER_SERVICE} ${NPM_RUN} build
+
+start:
+	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} -it --service-ports --rm ${DOCKER_SERVICE} ${NPM_RUN} start
+
+lint:
+	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} ${DOCKER_SERVICE} ${NPM_RUN} lint
+
+bash:
+	$(DOCKER_COMPOSE_FLAGS) run ${FLAGS} -it ${DOCKER_SERVICE} $(filter-out $@,$(MAKECMDGOALS)) /bin/sh
+
+%:
+	@:

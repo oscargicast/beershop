@@ -4,7 +4,7 @@ The challengue is described in the [CHALLENGUE.md](CHALLENGUE.md) file.
 
 ## Description
 
-The domain model was implemented in the [`src/domain`](src/domain) and the UML model is the following:
+The domain model was implemented in the [`backend/domain`](backend/domain) and the UML model is the following:
 
 ![model](assets/model.svg)
 
@@ -51,7 +51,7 @@ This runs the API server in the local machine in the port 8000.
 make runserver
 ```
 
-When the local server is running [the orders are populated using this script](src/populate.py).
+When the local server is running [the orders are populated using this script](backend/populate.py).
 
 **Here you can see the populated orders in your local machine:**
 - http://localhost:8000/api/v1/orders/order-1/
