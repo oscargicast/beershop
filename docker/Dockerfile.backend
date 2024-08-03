@@ -41,12 +41,8 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
 # Run Poetry
 WORKDIR $PYSETUP_PATH
-COPY pyproject.toml ./
+COPY backend/pyproject.toml ./
 RUN poetry lock
 RUN poetry install --only main --no-root
-
-# COPY backend/ /code/backend/
-# COPY backend/ $PYTHONPATH
-# COPY tests/ $PROJECT_PATH/tests/
 
 WORKDIR $PROJECT_PATH
