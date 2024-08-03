@@ -13,7 +13,7 @@ down:
 	$(DOCKER_COMPOSE_FLAGS) down --remove-orphans $(filter-out $@,$(MAKECMDGOALS))
 
 logs:
-	$(DOCKER_COMPOSE_FLAGS) --tail=25 $(filter-out $@,$(MAKECMDGOALS))
+	$(DOCKER_COMPOSE_FLAGS) logs --follow $(filter-out $@,$(MAKECMDGOALS))
 
 %:
 	@:
