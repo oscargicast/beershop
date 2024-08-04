@@ -10,49 +10,71 @@ The domain model was implemented in the [`backend/domain`](backend/domain) and t
 
 ## Requirements
 
-- Docker and docker compose.
-- Poetry (**optional**, for local virtualenv). Python 3.12 required.
+- [Docker](https://www.docker.com/) and [docker compose](https://docs.docker.com/compose/).
+- [Make](https://www.gnu.org/software/make/).
 
-## Building the containers
+## Running the project
 
 ```sh
+make setup # Sets env vars.
 make build
+make up # It runs the backend and frontend containers
 ```
 
-### Creating a local virtualenv with poetry (optional)
+The **frontend** is available at http://localhost:3000 and the **backend** at http://localhost:8000.
 
-```sh
-poetry install --no-root
-```
+> [!IMPORTANT]
+> When the local server is running [the orders are populated using this script](backend/populate.py).
+
+**Backend sample endpoints:**
+- http://localhost:8000/api/v1/orders/order-1/
+- http://localhost:8000/api/v1/orders/order-2/
+
+![Backend order 2](assets/backend-order-2.png)
+
+**Frontend sample pages:**
+- http://localhost:3000/orders/order-1
+- http://localhost:3000/orders/order-2
+
+![Frontend order 2](assets/frontend-order-2.png)
 
 ### Running the tests
 
 ```sh
-make test
-# Or, if you have a local virtualenv.
-poetry run pytest
+# Backend
+make -f Makefile.backend test
 ```
 
 ### Formatting and linting
 
 ```sh
-make mypy
-make black
+# Backend
+make -f Makefile.backend mypy
+make -f Makefile.backend black
+# Frontend
+make -f Makefile.frontend lint
+```
+
+### Running the servers individually
+
+#### Backend server
+
+This runs the FASTApi server in your local machine in the port 8000.
+```sh
+make -f Makefile.backend runserver
+```
+
+
+#### Frontend server
+
+This runs a NEXT.js server in your local machine in the port 3000.
+```sh
+make -f Makefile.frontend dev
 ```
 
 ### Makefile
 
-There are more useful commands in the [Makefile](Makefile), have a look and try them out.
+There are more useful common commands in the [Makefile](Makefile). For the backend and frontend, there are specific Makefiles.
+  - [Makefile.backend](Makefile.backend)
+  - [Makefile.frontend](Makefile.frontend)
 
-## Running the API server
-
-This runs the API server in the local machine in the port 8000.
-```sh
-make runserver
-```
-
-When the local server is running [the orders are populated using this script](backend/populate.py).
-
-**Here you can see the populated orders in your local machine:**
-- http://localhost:8000/api/v1/orders/order-1/
-- http://localhost:8000/api/v1/orders/order-2/

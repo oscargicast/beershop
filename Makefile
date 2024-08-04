@@ -3,6 +3,12 @@ CMD ?=
 
 DOCKER_COMPOSE_FLAGS := docker compose
 
+setup:
+	@echo "Setting up environment files..."
+	@cp frontend/.env.example frontend/.env
+	@cp backend/.env.example backend/.env
+	@echo "Done 🍺"
+
 build:
 	$(DOCKER_COMPOSE_FLAGS) build $(filter-out $@,$(MAKECMDGOALS))
 

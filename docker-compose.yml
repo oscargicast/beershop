@@ -9,11 +9,10 @@ services:
       - PYTHONUNBUFFERED=1
     volumes:
       - ./backend:/code
-      - ./.env:/code/.env
       - ./backend/pyproject.toml:/opt/pysetup/pyproject.toml
       - ./backend/poetry.lock:/opt/pysetup/poetry.lock
     env_file:
-      - .env
+      - backend/.env
     command: fastapi dev main.py --app=app --host=0.0.0.0 --port=8000
     ports:
       - "8000:8000"
@@ -27,6 +26,8 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/code
+    env_file:
+      - frontend/.env
     command: npm run dev
     depends_on:
       - backend
