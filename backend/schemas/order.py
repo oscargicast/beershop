@@ -3,7 +3,7 @@ from pydantic import BaseModel, PlainSerializer
 from typing import List
 from typing_extensions import Annotated
 
-from domain.order import Order, OrderRound, RoundItem
+from domain.order import Order, Item, OrderRound, RoundItem
 
 
 CustomDateTime = Annotated[
@@ -13,6 +13,20 @@ CustomDateTime = Annotated[
         return_type=str,
     ),
 ]
+
+
+class OrderItemSchema(BaseModel):
+    name: str
+    price_per_unit: int
+    total: int
+
+    @classmethod
+    def from_order_item(cls, item: Item) -> "OrderItemSchema":
+        return cls(
+            name=item.name,
+            price_per_unit=item.price_per_unit,
+            total=item.total,
+        )
 
 
 class RoundItemSchema(BaseModel):
@@ -43,7 +57,7 @@ class OrderSchema(BaseModel):
     taxes: float
     discounts: int
     subtotal: int
-    items: List[RoundItemSchema]
+    items: List[OrderItemSchema]
     rounds: List[OrderRoundSchema]
 
     @classmethod
@@ -55,10 +69,7 @@ class OrderSchema(BaseModel):
             taxes=order.taxes,
             discounts=order.discounts,
             subtotal=order.subtotal,
-            items=[
-                RoundItemSchema(beer=item.name, quantity=item.total)
-                for item in order.items
-            ],
+            items=[OrderItemSchema.from_order_item(item) for item in order.items],
             rounds=[
                 OrderRoundSchema.from_order_round(order_round)
                 for order_round in order.rounds

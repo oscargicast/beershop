@@ -49,6 +49,7 @@ def make_orders():
     )
     # order-2
     order_2 = Order(ref="order-2")
+    order_2.paid = True
     order_2.add_round(
         stock=stock,
         round=Round(
